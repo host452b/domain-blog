@@ -1,0 +1,78 @@
+---
+---
+<div id="search-modal" class="search-modal" style="display: none;">
+  <div class="search-backdrop" id="search-backdrop"></div>
+  <div class="search-content">
+    <div id="search-container"></div>
+  </div>
+</div>
+
+<style>
+  .search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20vh;
+  }
+
+  .search-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .search-content {
+    position: relative;
+    width: 90%;
+    max-width: 560px;
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 1rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<script>
+  async function initSearch() {
+    const { PagefindUI } = await import('@pagefind/default-ui');
+    new PagefindUI({
+      element: '#search-container',
+      showSubResults: false,
+      showImages: false,
+    });
+  }
+
+  const modal = document.getElementById('search-modal');
+  const backdrop = document.getElementById('search-backdrop');
+  const trigger = document.getElementById('search-trigger');
+  let initialized = false;
+
+  function openSearch() {
+    if (!initialized) {
+      initSearch();
+      initialized = true;
+    }
+    modal!.style.display = 'flex';
+    setTimeout(() => {
+      const input = modal!.querySelector('input');
+      input?.focus();
+    }, 100);
+  }
+
+  function closeSearch() {
+    modal!.style.display = 'none';
+  }
+
+  trigger?.addEventListener('click', openSearch);
+  backdrop?.addEventListener('click', closeSearch);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSearch();
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    }
+  });
+</script>
