@@ -23,3 +23,7 @@ pnpm-debug.log*
 
 # Pagefind
 public/pagefind/
+
+# Font source files (large TTF/OTF — only commit split woff2 output in public/fonts/)
+fonts/*.ttf
+fonts/*.otf

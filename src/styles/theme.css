@@ -1,0 +1,16 @@
+:root,
+[data-theme='light'] {
+  --bg: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #999999;
+  --link: #0066cc;
+  --code-bg: #f7f7f7;
+}
+
+[data-theme='dark'] {
+  --bg: #111111;
+  --text: #e0e0e0;
+  --text-muted: #666666;
+  --link: #4d9fff;
+  --code-bg: #1a1a1a;
+}

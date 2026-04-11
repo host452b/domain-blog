@@ -1,0 +1,48 @@
+/* Import cn-font-split generated @font-face rules */
+@import '/fonts/LXGWWenKai/result.css';
+@import '/fonts/LXGWNeoXiHei/result.css';
+@import '/fonts/LXGWNeoZhiSong/result.css';
+@import '/fonts/LXGWZhenKai/result.css';
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif, 'LXGWWenKai';
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  transition: background 0s, color 0s;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  text-decoration-color: currentColor;
+  opacity: 0.8;
+}
+
+a:hover {
+  opacity: 1;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
