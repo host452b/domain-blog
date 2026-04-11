@@ -1,14 +1,13 @@
 ---
-import '../styles/theme.css';
-import '../styles/global.css';
-import '../styles/typography.css';
+import Base from '../layouts/Base.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
 ---
-<html>
-  <body>
-    <div class="prose">
-      <h1>Test 测试</h1>
-      <p>Latin text with 中文混合排版。A <a href="#">blue link</a> with minimal underline.</p>
-      <pre><code>const hello = 'world';</code></pre>
-    </div>
-  </body>
-</html>
+<Base title="我的博客">
+  <Header />
+  <main>
+    <h1 style="font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem;">我的博客</h1>
+    <p style="color: var(--text-muted); font-size: 0.875rem;">placeholder</p>
+  </main>
+  <Footer />
+</Base>

@@ -1,0 +1,86 @@
+---
+interface Props {
+  showSearch?: boolean;
+}
+
+const { showSearch = true } = Astro.props;
+---
+<header class="header">
+  <nav class="header-nav">
+    <a href="/" class="header-home">首页</a>
+    <div class="header-links">
+      <a href="/about">About</a>
+      <a href="/projects">Projects</a>
+      {showSearch && <button class="search-trigger" id="search-trigger" aria-label="Search">⌕</button>}
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon-light">☀</span>
+        <span class="theme-icon-dark">☾</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header {
+    margin-bottom: 3rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoXiHei';
+    font-size: 0.875rem;
+  }
+
+  .header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-home {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .header-links {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+  }
+
+  .header-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+  }
+
+  .header-links a:hover {
+    color: var(--text);
+  }
+
+  .search-trigger,
+  .theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .search-trigger:hover,
+  .theme-toggle:hover {
+    color: var(--text);
+  }
+
+  [data-theme='light'] .theme-icon-dark { display: none; }
+  [data-theme='dark'] .theme-icon-light { display: none; }
+</style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  toggle?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme;
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+  });
+</script>
