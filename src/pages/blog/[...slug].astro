@@ -3,15 +3,16 @@ import { getCollection } from 'astro:content';
 import Post from '../../layouts/Post.astro';
 
 export async function getStaticPaths() {
+  const stripExt = (id: string) => id.replace(/\.mdx?$/, '');
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
   return posts.map((post, i) => ({
-    params: { slug: post.id },
+    params: { slug: stripExt(post.id) },
     props: {
       post,
-      prevPost: posts[i + 1] ? { title: posts[i + 1].data.title, slug: posts[i + 1].id } : undefined,
-      nextPost: posts[i - 1] ? { title: posts[i - 1].data.title, slug: posts[i - 1].id } : undefined,
+      prevPost: posts[i + 1] ? { title: posts[i + 1].data.title, slug: stripExt(posts[i + 1].id) } : undefined,
+      nextPost: posts[i - 1] ? { title: posts[i - 1].data.title, slug: stripExt(posts[i - 1].id) } : undefined,
     },
   }));
 }
