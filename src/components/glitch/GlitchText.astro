@@ -1,0 +1,26 @@
+---
+/**
+ * Wraps text content and applies subtle glitch effects.
+ * Use sparingly — one or two instances per page at most.
+ *
+ * mode:
+ *   "char" — renders one character in NeoZhiSong
+ *   "line" — adds micro letter-spacing drift
+ *   "mono" — shows a faint monospace fragment in the margin
+ */
+interface Props {
+  mode: 'char' | 'line' | 'mono';
+  glitchData?: string;
+}
+
+const { mode, glitchData } = Astro.props;
+
+const className = {
+  char: 'glitch-char',
+  line: 'glitch-line',
+  mono: 'glitch-mono',
+}[mode];
+---
+<span class={className} data-glitch={glitchData}>
+  <slot />
+</span>
