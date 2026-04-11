@@ -1,0 +1,30 @@
+---
+import Base from './Base.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+<Base title={title} description={description}>
+  <Header />
+  <main>
+    <h1 class="page-title">{title}</h1>
+    <div class="prose">
+      <slot />
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+</style>
