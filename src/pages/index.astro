@@ -1,13 +1,50 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import PostCard from '../components/blog/PostCard.astro';
+import CategoryFilter from '../components/blog/CategoryFilter.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = [...new Set(posts.map((p) => p.data.category))];
 ---
 <Base title="我的博客">
   <Header />
   <main>
-    <h1 style="font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem;">我的博客</h1>
-    <p style="color: var(--text-muted); font-size: 0.875rem;">placeholder</p>
+    <h1 class="site-title">我的博客</h1>
+    <p class="site-tagline">placeholder tagline</p>
+    <CategoryFilter categories={categories} />
+    <div class="post-list">
+      {posts.map((post) => (
+        <div data-category={post.data.category}>
+          <PostCard
+            title={post.data.title}
+            date={post.data.date}
+            tldr={post.data.tldr}
+            tags={post.data.tags}
+            slug={post.id.replace(/\.mdx?$/, '')}
+            body={post.body ?? ''}
+          />
+        </div>
+      ))}
+    </div>
   </main>
   <Footer />
 </Base>
+
+<style>
+  .site-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .site-tagline {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+import { readingTime } from '../../lib/reading-time';
+
+interface Props {
+  title: string;
+  date: Date;
+  tldr: string;
+  tags: string[];
+  slug: string;
+  body: string;
+}
+
+const { title, date, tldr, tags, slug, body } = Astro.props;
+const time = readingTime(body);
+const dateStr = date.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+---
+<article class="post-card">
+  <a href={`/blog/${slug}`} class="post-card-link">
+    <div class="post-card-header">
+      <h2 class="post-card-title">{title}</h2>
+      <time class="post-card-date" datetime={date.toISOString()}>{dateStr}</time>
+    </div>
+    <p class="post-card-tldr">{tldr}</p>
+  </a>
+  <div class="post-card-footer">
+    <div class="post-card-tags">
+      {tags.map((tag) => (
+        <a href={`/tags/${tag}`} class="post-card-tag">#{tag}</a>
+      ))}
+    </div>
+    <span class="post-card-time">{time}</span>
+  </div>
+</article>
+
+<style>
+  .post-card {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-card:first-child {
+    padding-top: 0;
+  }
+
+  .post-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .post-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .post-card-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .post-card-link:hover .post-card-title {
+    color: var(--link);
+  }
+
+  .post-card-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoXiHei';
+  }
+
+  .post-card-tldr {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .post-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.4rem;
+  }
+
+  .post-card-tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .post-card-tag {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoXiHei';
+  }
+
+  .post-card-tag:hover {
+    color: var(--text);
+  }
+
+  .post-card-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoXiHei';
+  }
+</style>
