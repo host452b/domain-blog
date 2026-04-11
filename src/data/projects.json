@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Example Project",
+    "description": "A sample project to show the layout.",
+    "tech": ["TypeScript", "Astro"],
+    "url": "https://github.com"
+  }
+]
