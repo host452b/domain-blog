@@ -1,0 +1,50 @@
+---
+interface Props {
+  text: string;
+  tag?: 'h1' | 'h2';
+}
+
+const { text, tag = 'h1' } = Astro.props;
+const Tag = tag;
+const chars = text.split('');
+---
+<Tag class="glitch-title" data-glitch-title>
+  {chars.map((char, i) => (
+    <span class="glitch-title-char" style={`--char-index: ${i}`}>
+      {char}
+    </span>
+  ))}
+</Tag>
+
+<style>
+  .glitch-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .glitch-title-char {
+    display: inline-block;
+    transition: transform 0.4s ease, font-family 0.4s ease;
+  }
+
+  .glitch-title:hover .glitch-title-char:nth-child(3n+1) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoZhiSong';
+  }
+
+  .glitch-title:hover .glitch-title-char:nth-child(5n+2) {
+    transform: translateY(-0.5px);
+  }
+
+  .glitch-title:hover .glitch-title-char:nth-child(7n) {
+    letter-spacing: 0.02em;
+  }
+</style>
+
+<script>
+  // Future: use pretext to measure each character precisely
+  // and apply micro-positioning for a more organic glitch feel.
+</script>
