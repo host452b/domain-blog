@@ -14,6 +14,7 @@
     "node": ">=20.3.0"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.8",
     "astro": "^5.0.0"
   },
   "devDependencies": {
@@ -21,6 +22,6 @@
     "@pagefind/default-ui": "^1.5.0",
     "cn-font-split": "^7.4.1",
     "pagefind": "^1.5.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.9.3"
   }
 }
