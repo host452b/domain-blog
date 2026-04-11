@@ -1,0 +1,33 @@
+---
+import '../styles/theme.css';
+import '../styles/global.css';
+import '../styles/typography.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '' } = Astro.props;
+---
+<html lang="zh" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    <link rel="stylesheet" href="/fonts/LXGWWenKai/result.css" />
+    <link rel="stylesheet" href="/fonts/LXGWNeoXiHei/result.css" />
+    <link rel="stylesheet" href="/fonts/LXGWNeoZhiSong/result.css" />
+    <link rel="stylesheet" href="/fonts/LXGWZhenKai/result.css" />
+    <title>{title}</title>
+    <script is:inline>
+      const theme = localStorage.getItem('theme')
+        || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = theme;
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
