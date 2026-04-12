@@ -7,15 +7,17 @@ import Search from '../components/layout/Search.astro';
 interface Props {
   title: string;
   description?: string;
+  lang?: string;
 }
 
-const { title, description = '' } = Astro.props;
+const { title, description = '', lang = 'zh' } = Astro.props;
 ---
-<html lang="zh" data-theme="light">
+<html lang={lang} data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {description && <meta name="description" content={description} />}
     <link rel="stylesheet" href="/fonts/LXGWWenKai/result.css" />
     <link rel="stylesheet" href="/fonts/LXGWNeoXiHei/result.css" />
