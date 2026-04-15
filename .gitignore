@@ -7,6 +7,7 @@ dist/
 
 # dependencies
 node_modules/
+package-lock.json
 
 # logs
 npm-debug.log*
@@ -14,18 +15,38 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# environment variables
+# environment variables — NEVER commit keys/tokens
 .env
-.env.local
-.env.*.local
-.env.production
+.env.*
+!.env.example
 
-# macOS-specific files
+# macOS
 .DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
 
-# Pagefind
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-*
+
+# Pagefind (generated at build time)
 public/pagefind/
 
-# Font source files (large TTF/OTF — only commit split woff2 output in public/fonts/)
+# Font source files (large TTF/OTF — only commit split woff2)
 fonts/*.ttf
 fonts/*.otf
+
+# Nested git repos (submodules added accidentally)
+china_rental_buy_property_guide/
+travel_with_family/
+
+# OS generated
+*.bak
+*.tmp
+*.log

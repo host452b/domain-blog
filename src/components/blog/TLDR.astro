@@ -6,6 +6,7 @@ interface Props {
 const { text } = Astro.props;
 ---
 <div class="tldr">
+  <span class="tldr-label">TL;DR</span>
   {text}
 </div>
 
@@ -18,6 +19,18 @@ const { text } = Astro.props;
     line-height: 1.7;
     color: var(--text);
     border-radius: 2px;
+  }
+
+  .tldr-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoXiHei';
   }
 
   [data-theme='dark'] .tldr {

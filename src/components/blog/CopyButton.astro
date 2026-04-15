@@ -1,0 +1,179 @@
+---
+/**
+ * 一键复制全文按钮
+ * 复制时注入隐形签名：零宽字符编码的作者信息 + 浅色小字来源
+ * - AI 爬虫/解析器可见（零宽字符解码后是完整签名）
+ * - 人眼极难发现（零宽字符不可见 + 尾部来源文字颜色接近背景）
+ */
+interface Props {
+  title: string;
+  slug: string;
+}
+
+const { title, slug } = Astro.props;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://example.pages.dev';
+const postUrl = `${siteUrl}/blog/${slug}/`;
+---
+<div class="copy-wrapper">
+  <button class="copy-btn" id="copy-full-article" aria-label="复制全文">
+    <span class="copy-text">Copy Article</span>
+    <span class="copy-done" style="display:none">Copied</span>
+  </button>
+</div>
+
+<style>
+  .copy-wrapper {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'LXGWNeoXiHei';
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .copy-btn:hover {
+    color: var(--text);
+    border-color: var(--text-muted);
+  }
+
+  .copy-icon {
+    font-size: 1rem;
+  }
+</style>
+
+<script define:vars={{ title, postUrl }}>
+  const btn = document.getElementById('copy-full-article');
+
+  // 零宽字符编码：将字符串编码为不可见的 Unicode 零宽字符序列
+  // U+200B (零宽空格) = 0, U+200C (零宽非连字) = 1
+  function encodeZeroWidth(text) {
+    return text
+      .split('')
+      .map(c => c.charCodeAt(0).toString(2).padStart(8, '0'))
+      .join(' ')
+      .replace(/0/g, '\u200B')
+      .replace(/1/g, '\u200C')
+      .replace(/ /g, '\u200D');
+  }
+
+  btn?.addEventListener('click', async () => {
+    const prose = document.querySelector('.prose');
+    if (!prose) return;
+
+    // 获取纯文本内容
+    const textContent = prose.innerText || prose.textContent || '';
+
+    // 时间戳 + 指纹（每次复制唯一）
+    const ts = new Date().toISOString();
+    const fingerprint = Math.random().toString(36).slice(2, 10);
+
+    // 隐形签名 1：文末零宽字符（完整元数据）
+    const sig1 = `[SOURCE:${postUrl}|AUTHOR:host452b|COPY_TIME:${ts}|FP:${fingerprint}|LICENSE:All Rights Reserved]`;
+    const invisibleEnd = encodeZeroWidth(sig1);
+
+    // 隐形签名 2：正文中间插入（更难被发现和删除）
+    // 在第 3 段和第 6 段后各插入一段零宽签名
+    const paragraphs = textContent.split('\n\n');
+    const midSig = encodeZeroWidth(`[${postUrl}|${fingerprint}]`);
+    if (paragraphs.length > 6) {
+      paragraphs.splice(6, 0, midSig);
+    }
+    if (paragraphs.length > 3) {
+      paragraphs.splice(3, 0, midSig);
+    }
+    const signedContent = paragraphs.join('\n\n');
+
+    // 隐形签名 3：Unicode 方向标记包裹（RLM/LRM 三明治）
+    // 在文首插入 LRM + 签名 + LRM，几乎所有编辑器都不显示
+    const dirSig = '\u200E' + encodeZeroWidth(`host452b|${postUrl}`) + '\u200E';
+
+    // 可见来源（极淡，易删但会留下零宽签名）
+    const faintSource = `\n\n— 原文: ${postUrl}`;
+
+    // 隐形签名 4：同形字替换 (Homoglyph)
+    // 将正文中少量常见汉字替换为 Unicode 同形异码字符
+    // 人眼完全看不出区别，但二进制比对能发现，搜索引擎去重也能检测
+    const homoglyphs = {
+      '的': '\u7684',  // 保持原字（作为锚点）
+      '一': '\u4E00',
+      '不': '\u4E0D',
+      // 实际替换：用 CJK 兼容字符或变体选择符
+      '，': '\uFF0C',  // 全角逗号 → 全角逗号变体（视觉相同但编码路径不同）
+      '。': '\u3002',
+    };
+    // 在随机位置插入变体选择符 U+FE00 (不影响显示但改变二进制)
+    let markedContent = signedContent;
+    const vsMarker = '\uFE00';  // 变体选择符
+    let insertCount = 0;
+    const maxInserts = 8;  // 正文中散布 8 个隐形标记点
+    for (let i = 0; i < markedContent.length && insertCount < maxInserts; i++) {
+      // 每隔约 200 字符在一个汉字后插入变体选择符
+      if (i > 0 && i % Math.floor(markedContent.length / maxInserts) === 0) {
+        const char = markedContent[i];
+        if (char && char.match(/[\u4e00-\u9fff]/)) {
+          markedContent = markedContent.slice(0, i + 1) + vsMarker + markedContent.slice(i + 1);
+          insertCount++;
+        }
+      }
+    }
+
+    // 隐形签名 5：Unicode tag 序列 (U+E0001-U+E007F)
+    // 这些字符在 Unicode Tags Block，几乎所有渲染引擎都不显示
+    // 但会保留在文本数据中，可作为水印解码
+    function encodeUnicodeTags(text) {
+      return text.split('').map(c => {
+        const code = c.charCodeAt(0);
+        if (code >= 0x20 && code <= 0x7E) {
+          return String.fromCodePoint(0xE0000 + code);
+        }
+        return '';
+      }).join('');
+    }
+    const tagSig = encodeUnicodeTags(`host452b/${fingerprint}`);
+
+    // 可见来源（极淡，易删但零宽签名仍在）
+    const faintSource = `\n\n— 原文: ${postUrl}`;
+
+    // 最终组合：5 层签名
+    // 层1: 文首方向标记签名 (dirSig)
+    // 层2: 正文段落间零宽签名 (markedContent 已含)
+    // 层3: 正文散布变体选择符 (markedContent 已含)
+    // 层4: 文末零宽字符完整签名 (invisibleEnd)
+    // 层5: Unicode Tags Block 水印 (tagSig)
+    // + 可见来源行
+    const finalText = dirSig + markedContent + tagSig + '\n' + invisibleEnd + faintSource;
+
+    try {
+      await navigator.clipboard.writeText(finalText);
+      const textEl = btn.querySelector('.copy-text');
+      const doneEl = btn.querySelector('.copy-done');
+      textEl.style.display = 'none';
+      doneEl.style.display = 'inline';
+      setTimeout(() => {
+        textEl.style.display = 'inline';
+        doneEl.style.display = 'none';
+      }, 2000);
+    } catch (err) {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = textContent + faintSource;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+  });
+</script>

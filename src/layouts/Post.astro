@@ -4,6 +4,8 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import TLDR from '../components/blog/TLDR.astro';
 import TOC from '../components/blog/TOC.astro';
+import Comments from '../components/blog/Comments.astro';
+import CopyButton from '../components/blog/CopyButton.astro';
 import { readingTime } from '../lib/reading-time';
 
 interface Props {
@@ -14,11 +16,12 @@ interface Props {
   tags: string[];
   headings: { depth: number; slug: string; text: string }[];
   body: string;
+  slug?: string;
   prevPost?: { title: string; slug: string };
   nextPost?: { title: string; slug: string };
 }
 
-const { title, date, tldr, category, tags, headings, body, prevPost, nextPost } = Astro.props;
+const { title, date, tldr, category, tags, headings, body, slug, prevPost, nextPost } = Astro.props;
 const time = readingTime(body);
 const dateStr = date.toLocaleDateString('zh-CN', {
   year: 'numeric',
@@ -53,6 +56,8 @@ const dateStr = date.toLocaleDateString('zh-CN', {
         {prevPost && <a href={`/blog/${prevPost.slug}`} class="post-nav-prev">← {prevPost.title}</a>}
         {nextPost && <a href={`/blog/${nextPost.slug}`} class="post-nav-next">{nextPost.title} →</a>}
       </nav>
+      <CopyButton title={title} slug={slug || ''} />
+      <Comments />
     </article>
   </main>
   <Footer />
