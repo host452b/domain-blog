@@ -1,5 +1,5 @@
 ---
-title: "Do Things That Don't Scale"
+title: "做那些无法规模化的事 | Do Things That Don't Scale"
 date: 2013-07-01
 tldr: "Startups don't take off by themselves — founders make them take off. Recruit users one by one. Make them insanely happy. Think of ideas as vectors, not scalars."
 category: "名人堂"
