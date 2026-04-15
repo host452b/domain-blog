@@ -28,6 +28,7 @@ const { Content, headings } = await render(post);
   tags={post.data.tags}
   headings={headings}
   body={post.body ?? ''}
+  slug={Astro.params.slug}
   prevPost={prevPost}
   nextPost={nextPost}
 >
